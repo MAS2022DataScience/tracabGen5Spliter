@@ -61,4 +61,13 @@ public class Topics {
         .build();
   }
 
+//  @Bean
+//  public NewTopic temp() {
+//    return TopicBuilder.name("temp")
+//        .partitions(3)
+//        .replicas(2)
+//        .config(TopicConfig.RETENTION_MS_CONFIG, "-1")
+//        .build();
+//  }
+
 }
