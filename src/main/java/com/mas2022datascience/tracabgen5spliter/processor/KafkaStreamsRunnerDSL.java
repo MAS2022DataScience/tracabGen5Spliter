@@ -52,7 +52,7 @@ public class KafkaStreamsRunnerDSL {
               PlayerBall
                   .newBuilder()
                   .setId(valueObject.getId())
-                  .setMatchId(key)
+                  .setMatchId(value.getMatchId())
                   .setTs(Instant.ofEpochMilli(utcString2epocMs(value.getUtc())))
                   .setX(valueObject.getX())
                   .setY(valueObject.getY())
