@@ -61,6 +61,23 @@ public class Topics {
         .build();
   }
 
+  @Value(value = "${topic.general-03.name}")
+  private String topicNamePlayerBallCompact;
+  @Value(value = "${topic.general-03.partitions}")
+  private Integer topicPartitionsPlayerBallCompact;
+  @Value(value = "${topic.general-03.replication-factor}")
+  private Integer topicReplicationFactorPlayerBallCompact;
+
+  // creates or alters the topic
+  @Bean
+  public NewTopic general03() {
+    return TopicBuilder.name(topicNamePlayerBallCompact)
+        .partitions(topicPartitionsPlayerBallCompact)
+        .replicas(topicReplicationFactorPlayerBallCompact)
+        .config(TopicConfig.RETENTION_MS_CONFIG, "-1")
+        .build();
+  }
+
 //  @Bean
 //  public NewTopic temp() {
 //    return TopicBuilder.name("temp")

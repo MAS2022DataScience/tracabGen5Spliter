@@ -3,6 +3,7 @@ package com.mas2022datascience.tracabgen5spliter.processor;
 import com.mas2022datascience.avro.v1.Object;
 import com.mas2022datascience.avro.v1.PlayerBall;
 import com.mas2022datascience.avro.v1.TracabGen5TF01;
+import com.mas2022datascience.util.Player;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -28,8 +29,9 @@ public class KafkaStreamsRunnerDSL {
 
   @Value(value = "${spring.kafka.properties.schema.registry.url}") private String schemaRegistry;
   @Value(value = "${topic.tracab-01.name}") private String topicIn;
-  @Value(value = "${topic.general-01.name}") private String topicOutPlayer;
+  @Value(value = "${topic.general-01.name}") private String topicOutPlayerBall;
   @Value(value = "${topic.general-02.name}") private String topicOutTeam;
+  @Value(value = "${topic.general-03.name}") private String topicOutPlayerBallCompact;
 
   @Bean
   public KStream<String, TracabGen5TF01> kStream(StreamsBuilder kStreamBuilder) {
@@ -51,7 +53,7 @@ public class KafkaStreamsRunnerDSL {
               key+"-"+valueObject.getId(),
               PlayerBall
                   .newBuilder()
-                  .setId(valueObject.getId())
+                  .setPlayerId(Player.getPlayerOrBallId(valueObject))
                   .setMatchId(value.getMatchId())
                   .setTs(Instant.ofEpochMilli(utcString2epocMs(value.getUtc())))
                   .setX(valueObject.getX())
@@ -67,7 +69,10 @@ public class KafkaStreamsRunnerDSL {
         return result;
       }
     );
-    playerStream.to(topicOutPlayer);
+    playerStream.to(topicOutPlayerBall);
+
+    // player ball compacted stream to topic
+    stream.to(topicOutPlayerBallCompact);
 
     //playerStream.filter((key, value) -> value.getId().equals("250101463")).to("temp");
 
