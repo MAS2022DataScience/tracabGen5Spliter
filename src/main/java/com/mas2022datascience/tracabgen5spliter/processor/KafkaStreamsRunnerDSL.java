@@ -49,22 +49,45 @@ public class KafkaStreamsRunnerDSL {
       (key, value) -> {
         List<KeyValue<String, PlayerBall>> result = new LinkedList<>();
         for ( Object valueObject : value.getObjects() ) {
-          result.add(KeyValue.pair(
-              key+"-"+valueObject.getId(),
-              PlayerBall
-                  .newBuilder()
-                  .setPlayerId(Player.getPlayerOrBallId(valueObject))
-                  .setMatchId(value.getMatchId())
-                  .setTs(Instant.ofEpochMilli(utcString2epocMs(value.getUtc())))
-                  .setX(valueObject.getX())
-                  .setY(valueObject.getY())
-                  .setZ(valueObject.getZ())
-                  .setVelocity(valueObject.getVelocity())
-                  .setAccelleration(valueObject.getAccelleration())
-                  .setDistance(valueObject.getDistance())
-                  .build()
-              )
-          );
+          if (valueObject.getType() == 0 || valueObject.getType() == 1
+              && valueObject.getPlayerId() != null) { // player
+            result.add(KeyValue.pair(
+                    key+"-"+valueObject.getPlayerId(),
+                    PlayerBall
+                        .newBuilder()
+                        .setTs(value.getTs())
+                        .setPlayerId(Player.getPlayerOrBallId(valueObject))
+                        .setTeamId(valueObject.getTeamId())
+                        .setMatchId(value.getMatchId())
+                        .setX(valueObject.getX())
+                        .setY(valueObject.getY())
+                        .setZ(valueObject.getZ())
+                        .setVelocity(valueObject.getVelocity())
+                        .setAccelleration(valueObject.getAccelleration())
+                        .setDistance(valueObject.getDistance())
+                        .build()
+                )
+            );
+          } else {
+            if (valueObject.getType() == 7) { // ball
+              result.add(KeyValue.pair(
+                      key+"-"+valueObject.getId(),
+                      PlayerBall
+                          .newBuilder()
+                          .setTs(value.getTs())
+                          .setPlayerId("0")
+                          .setMatchId(value.getMatchId())
+                          .setX(valueObject.getX())
+                          .setY(valueObject.getY())
+                          .setZ(valueObject.getZ())
+                          .setVelocity(valueObject.getVelocity())
+                          .setAccelleration(valueObject.getAccelleration())
+                          .setDistance(valueObject.getDistance())
+                          .build()
+                  )
+              );
+            }
+          }
         }
         return result;
       }
