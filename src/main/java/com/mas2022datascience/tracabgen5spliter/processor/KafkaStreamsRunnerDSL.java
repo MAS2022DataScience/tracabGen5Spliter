@@ -70,6 +70,13 @@ public class KafkaStreamsRunnerDSL {
                           .setVelocity(valueObject.getVelocity())
                           .setAccelleration(valueObject.getAccelleration())
                           .setDistance(valueObject.getDistance())
+                          .setDistancePlayerBall(valueObject.getDistancePlayerBall())
+                          .setPlayerBallVectorX(valueObject.getPlayerBallVectorX())
+                          .setPlayerBallVectorY(valueObject.getPlayerBallVectorY())
+                          .setPlayerBallVectorZ(valueObject.getPlayerBallVectorZ())
+                          .setPlayerVectorX(valueObject.getPlayerVectorX())
+                          .setPlayerVectorY(valueObject.getPlayerVectorY())
+                          .setPlayerVectorZ(valueObject.getPlayerVectorZ())
                           .build()
                   )
               );
